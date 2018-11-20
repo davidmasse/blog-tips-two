@@ -30,6 +30,8 @@ df['skills'] = df['skills'].map(lambda sk_list: (sk_list, [])[sk_list == ['']])
 
 ### Grouped Boxplot
 
+Here's a way to make a grouped boxplot (on the same scale), with the width of the box proportional to the number of samples in that group:
+
 ```
 # Numpy, not Pandas, so use .stack instead of .concat
 for_box = np.stack((clust_assigned, y), axis = 1)

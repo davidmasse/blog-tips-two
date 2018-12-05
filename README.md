@@ -1,32 +1,40 @@
-## Tips Part Two
+## Pandas Patterns for ETL and EDA
 
+This post for my own reference continues the themes of and ![earlier blog post](https://medium.com/@davidmasse8/helpful-plotting-and-pandas-patterns-80fd82b2b88b).
+
+
+### Uploading Multiple Files to One Dataframe
+
+Reads and combines all the CSV files in the `/data` folder of the current directory:
 ```
+import glob
 df = pd.concat([pd.read_csv(file) for file in glob.glob('./data/*')], ignore_index = True)
 ```
 
-`df.dtypes`
+The above tacks the rows from each CSV file onto the bottom of the dataframe, but they could also be combined (if they have the same number of rows) "horizontally" (i.e. by column): `combined = pd.concat([skills_df, rate], axis = 1, sort = False)`
 
-`df.isna().sum()`
+### More Initial Checks
 
-`df = df[df.column.notna()]`
+Missing values: Note that when using expressions like `df.isnull().sum()` to count missing values, `isnull()` is an alias for `isna()`, which could just as easily be used.  Both `NULL` and `NA` (different in R) in Pandas refer to Numpy's `NaN`.
 
-`df['column'] = df['column'].fillna(0) or. fillna('missing')`
+`.notna()` to keep only rows where the column is not null: `df = df[df.column.notna()]`
 
-```
-# take only the numbers in a string (and divide by 100 to get dollars instead of cents, for example)
-df['column'] = df['column'].map(lambda string: float(''.join([char for char in string if char.isdigit()]))/100)
-# another lambda function to use:
-lambda string: string.replace('[', '<')
-```
+`.fillna()` as way to interpret missing values in a way that makes sense for the DataFrame at hand:
+`df['column'] = df['column'].fillna(X)`.  If the column has numeric values, `X` here might be zero if missing values should really mean "none."  If the column has categorical values, `X` could be `"other"`, a separate category.
 
-```
-# ternary operator
-df['skills'] = df['skills'].map(lambda sk_list: (sk_list, [])[sk_list == ['']])
-```
+### Cleaning and Transforming the DataFrame
+
+Take only the numbers in a string (and divide by 100 to get dollars instead of cents, for example):
+`df['column'] = df['column'].map(lambda string: float(''.join([char for char in string if char.isdigit()]))/100)`
+
+Another lambda function to use: `lambda string: string.replace('[', '<')`
+
+Ternary operator for lambda function: `df['skills'] = df['skills'].map(lambda sk_list: (sk_list, [])[sk_list == ['']])`
+
 
 `skills_df = df['skills'].str.join('|').str.get_dummies()`
 
-`combined = pd.concat([skills_df, rate], axis = 1, sort = False)`
+
 
 ### Grouped Boxplot
 

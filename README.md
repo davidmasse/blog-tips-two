@@ -1,6 +1,6 @@
 ## Pandas Patterns for ETL and EDA
 
-This post for my own reference continues the themes of and ![earlier blog post](https://medium.com/@davidmasse8/helpful-plotting-and-pandas-patterns-80fd82b2b88b).
+This post for my own reference continues the themes of and [earlier blog post](https://medium.com/@davidmasse8/helpful-plotting-and-pandas-patterns-80fd82b2b88b).
 
 
 ### Uploading Multiple Files to One Dataframe
